@@ -8,10 +8,10 @@ def Kmeans(imgMat, k):
     distancesOld = np.zeros((height, length,k))              # initializing Distances
     imgRes = imgMat.copy()                                   # "Results" image
     centroids = np.random.randint(0, 256, size=(1, k))       # initializing centroids
+    img_view = np.lib.stride_tricks.as_strided(imgMat, shape=(height, length, 1, k),    # the shape of the array after striding
+            strides=(length*size, 1*size, 0*size, 0*size))   # stride size mesured in bytes (size=1byte) step : full length then one step
     while True:                                              # loop in num of iterations
-        img_view = np.lib.stride_tricks.as_strided(imgMat, shape=(height, length, 1, k),    # the shape of the array after striding
-            strides=(length*size, 1*size, 0*size, 0*size))   # stride size mesured in bytes (size=1byte) step : full length for row, one step for column
-        distances = np.array(np.abs(img_view - centroids)[:, :, 0, :])   # Manhattan Distance calculating, [:, :, 0, :] for preserving the array shape
+        distances = np.array(np.abs(img_view - centroids)[:, :, 0, :])   # Manhattan Distance calculating
         if (np.array_equal(distancesOld,distances)) :        # test if converged
             break                                            # break if (new distances == old distances)
         idx = np.argmin(distances, axis=-1)                  # indices of minimum distances
